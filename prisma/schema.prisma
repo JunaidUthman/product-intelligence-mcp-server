@@ -1,0 +1,33 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model product_scores {
+  id                Int                @id @default(autoincrement())
+  product_id        Int?
+  session_id        Int?
+  prix_original     String?            @db.VarChar(100)
+  prix_usd          Float?             @db.Float
+  note_etoiles      Float?             @db.Float
+  nombre_avis       Int?
+  stock             String?            @db.Text
+  score             Float?             @db.Float
+  scraped_products  scraped_products?  @relation(fields: [product_id], references: [id])
+}
+
+model scraped_products {
+  id             Int              @id @default(autoincrement())
+  boutique       String?          @db.VarChar(100)
+  categorie      String?          @db.VarChar(100)
+  nom            String?          @db.Text
+  description    String?          @db.Text
+  lien           String?          @db.Text
+  product_id     String?          @db.VarChar(100)
+  image_url      String?          @db.Text
+  product_scores product_scores[]
+}
