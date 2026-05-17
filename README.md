@@ -68,19 +68,7 @@ cd product-intelligence-mcp
 npm install
 ```
 
-### 2. Configuration
-
-Create a `.env` file in the root directory and configure your database connection string and server port:
-
-```env
-# Database connection string format: mysql://USER:PASSWORD@HOST:PORT/DATABASE
-DATABASE_URL="mysql://root:password@localhost:3306/product_intelligence"
-
-# The port the Express server will bind to
-PORT=3001
-```
-
-### 3. Database Setup (Prisma)
+### 2. Database Setup (Prisma)
 
 Generate the Prisma client to ensure strong typing against your current database schema:
 
@@ -93,7 +81,7 @@ npm run prisma:generate
 npm run prisma:studio
 ```
 
-### 4. Running the Server
+### 3. Running the Server
 
 **Development Mode** (Hot-reloads / ts-node execution):
 ```bash
