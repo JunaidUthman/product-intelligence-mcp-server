@@ -198,6 +198,10 @@ function createMcpServer(): Server {
 // Track active transports by session ID for proper routing
 const activeTransports = new Map<string, SSEServerTransport>();
 
+app.get("/health", (_req, res) => {
+  res.status(200).json({ status: "ok" });
+});
+
 app.get("/sse", async (req, res) => {
   console.log("New SSE connection established");
 

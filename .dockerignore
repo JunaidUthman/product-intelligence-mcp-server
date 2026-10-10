@@ -1,0 +1,12 @@
+node_modules
+dist
+.git
+.gitignore
+.env
+.env*.local
+*.log
+npm-debug.log*
+test-call-tool.ts
+test-call-tool.js
+README.md
+
