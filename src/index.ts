@@ -18,41 +18,11 @@ app.use(cors());
 // Do NOT use express.json() globally as it consumes the request stream
 // which SSEServerTransport needs.
 
-// Zod schemas for tool input validation
-const SearchProductsSchema = z.object({
-  max_price: z.number().optional(),
-  category: z.string().optional(),
-  min_rating: z.number().optional(),
-  store: z.string().optional(),
-  query: z.string().optional(),
-  limit: z.number().optional(), // How many results to return (default 10, max 100)
-});
-
-// Maps common user terms to database category values
-const CATEGORY_ALIASES: Record<string, string[]> = {
-  phones: ["phones", "phone", "mobile", "smartphone", "mobiles"],
-  pcs: ["pcs", "pc", "laptop", "laptops", "computer", "computers", "notebook"],
-  chargers: ["chargers", "charger", "cable", "cables", "accessory", "accessories", "accessoire"],
-};
-
-/**
- * Resolves a user-facing category term (e.g. "laptops") to the DB category
- * values it maps to (e.g. ["pcs"]). Returns an array for use in Prisma `in`.
- */
-function resolveCategoryFilter(userCategory: string): string[] {
-  const lower = userCategory.toLowerCase();
-  for (const [dbCat, aliases] of Object.entries(CATEGORY_ALIASES)) {
-    if (aliases.includes(lower)) {
-      return [dbCat];
-    }
-  }
-  // Fallback: pass the raw value through as-is
-  return [userCategory];
-}
-
-const GetProductByIdSchema = z.object({
-  product_id: z.union([z.string(), z.number()]),
-});
+import {
+  SearchProductsSchema,
+  resolveCategoryFilter,
+  GetProductByIdSchema
+} from "./utils.js";
 
 /**
  * Creates and configures a fresh MCP Server instance.
@@ -241,9 +211,13 @@ app.post("/messages", async (req, res) => {
   await transport.handlePostMessage(req, res);
 });
 
+export { app };
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`MCP Server running on port ${PORT}`);
-  console.log(`SSE endpoint:      http://localhost:${PORT}/sse`);
-  console.log(`Messages endpoint: http://localhost:${PORT}/messages`);
-});
+
+if (process.env.NODE_ENV !== "test") {
+  app.listen(PORT, () => {
+    console.log(`MCP Server running on port ${PORT}`);
+    console.log(`SSE endpoint:      http://localhost:${PORT}/sse`);
+    console.log(`Messages endpoint: http://localhost:${PORT}/messages`);
+  });
+}
