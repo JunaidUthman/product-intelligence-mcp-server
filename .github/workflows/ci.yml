@@ -75,8 +75,8 @@ jobs:
 
           cd infra-repo
 
-          # Update image using yq directly on the YAML manifest
-          yq -i '.spec.template.spec.containers[0].image = env(NEW_IMAGE)' base/mcp-server/mcp-server.yaml
+          # Update image using yq directly on the Deployment document (ignoring Service)
+          yq -i '(select(.kind == "Deployment").spec.template.spec.containers[0].image) = env(NEW_IMAGE)' base/mcp-server/mcp-server.yaml
 
           # Commit and push ONLY mcp-server.yaml
           git add base/mcp-server/mcp-server.yaml
