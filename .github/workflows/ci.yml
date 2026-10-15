@@ -12,6 +12,7 @@ on:
       - 'package-lock.json'
       - 'tsconfig.json'
       - 'Dockerfile'
+      - '.github/workflows/**'
 
 jobs:
   test-and-build:
